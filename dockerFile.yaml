@@ -1,0 +1,27 @@
+#docker file permet d'installer des extensions comme sql composer etc
+
+#je lui dit depuis le nom de l'image
+FROM php:8.3-apache
+
+#je lance des cmd linux pour installer les extensions
+
+# Mise à jour des paquets et installation des dépendances
+RUN apt-get update && apt-get upgrade -y && apt-get install -y libpq-dev git unzip
+#une fois mis à jour je vais installer les extensions, dans l'image que j'ai choisi j'ai la possibilité de séléctionner des extensions
+# il faut activer les extension apres le && avec enable
+RUN docker-php-ext-install mysqli pdo pdo_mysql && \
+    docker-php-ext-enable mysqli pdo_mysql && \
+    php -m
+
+# Installer les dépendances nécessaires pour Composer
+# RUN apt-get update && apt-get install -y git unzip
+
+# Installer Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    && mv composer.phar /usr/local/bin/composer
+
+
+# j'expose le port 80 de docker 
+EXPOSE 80

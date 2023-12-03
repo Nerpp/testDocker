@@ -1,0 +1,47 @@
+#il faut lui donner la version que l'on veut utiliser
+version: '3.9'
+
+#la partie service est la partie ou on définit ce que l'on veut utiliser
+#on va chercher les images sur docker hub
+# les images peuvent contenir linux debian apache etc.... de base
+services:
+  #service php
+  php:
+    image: php:8.3-apache
+    # je défini le nom du container
+    container_name: php8.3
+    #quand on définit les ports on lui dit de rerouter depuis le port 80 celui par défaut
+    ports:
+      - 8000:80
+    #la partie volumes sert à préciser à docker ou sont les information apache utilise le dossier www dans var pour utiliser les éléments
+    volumes:
+      - ./php:/var/www/html
+    # je lui indique de construire le dockerFile avec un conteste
+    build:
+    #   # je lui indique que c'est sur fichier
+      context: .
+    #   # je lui donne la route du dockerFile
+      dockerfile: ./dockerFile.yaml
+  #service mysql je l'appelle db mais j'aurais put l'appeler autrement
+  db:
+    image: mysql:8.2.0
+    # container_name: ruakh_db
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: demo
+      MYSQL_USER: test
+      MYSQL_PASSWORD: pass
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db:db
+    ports:
+      - "8080:80"
+    volumes:
+       - ./apache-config.conf:/etc/apache2/conf-available/apache-config.conf
+

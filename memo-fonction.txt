@@ -1,0 +1,22 @@
+#pour lister les images dockers
+docker ps -a
+docker ls
+
+#pour tuer les les processus et supprimer les images
+docker-compose down
+
+#pour lancer les processus et visualiser les réponses serveur
+docker-compose up
+
+#pour lancer les processus et ne pas visualiser les réponses serveur
+docker-compose up -d
+
+# pour constuire docker si mod (le fichier dockerFile.yaml)
+docker-compose build
+
+# pouur supprimer tout les containers arrété
+docker container prune
+
+
+#pour utiliser composer
+docker exec -it 0377bea2b723 (id du container php) composer --version
